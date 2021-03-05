@@ -15,7 +15,7 @@
             <button class="btn btn-primary w-100" style="border-radius: .5rem">Login</button>
             <p class="w-100 text-center" style="margin-top: 2rem">or continue with these social profile</p>
             <div id="social-login">
-                <div><img src="/resources/Google.svg"></div>
+                <div><a v-on:click="openLoginGoogle"><img src="/resources/Google.svg"></a></div>
                 <div><img src="/resources/Facebook.svg"></div>
                 <div><img src="/resources/Twitter.svg"></div>
                 <div><img src="/resources/Gihub.svg"></div>
@@ -32,6 +32,13 @@
 <script lang="ts">
 export default {
     name: "LoginPage",
+    methods: {
+        openLoginGoogle: function() {
+            let link = "https://accounts.google.com/o/oauth2/auth?scope=openid%20profile%20email&redirect_uri=http://localhost:8080/api/login-google&response_type=code&client_id=617831923199-ha6054jhlqqkrioohv5fioo5m5f10iki.apps.googleusercontent.com&approval_prompt=force"
+            let windowGoogle = window.open(link, '_blank', 
+                'location=yes, height=570, width=520, scrollbars=yes, status=yes')
+        },
+    }
 }
 </script>
 
