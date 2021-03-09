@@ -82,7 +82,7 @@ import HeaderComponent from "../../components/HeaderComponent.vue"
 import FooterComponent from "../../components/FooterComponent.vue"
 
 export default {
-    name: "InfoPage",
+    name: "InfoUpdatePage",
     components: {
         HeaderComponent,
         FooterComponent,

@@ -24,72 +24,65 @@
             <p class="w-100 text-center mb-0" style="margin-top: 2rem">Adready a member? Login</p>
         </form>
     </div>
-    <div id="copyright">
-        <span>created by ngosangns</span>
-        <span>devChallenges.io</span>
-    </div>
+    <FooterComponent/>
 </div>
 </template>
 
 <script lang="ts">
+import FooterComponent from "../../components/FooterComponent.vue"
 export default {
     name: "SignupPage",
+    components: {
+        FooterComponent,
+    },
 }
 </script>
 
-<style scoped>
-#copyright {
-    grid-column-start: 2;
-    grid-row-start: 6;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding-top: 1rem;
-    color: #828282;
-}
-
+<style scoped lang="scss">
 #container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(6, 1fr);
     min-height: 100vh;
-}
-
-#card {
-    text-align: left;
-    padding: 2rem;
-    border: thin solid #BDBDBD;
-    border-radius: 2rem;
-    min-height: 5rem;
-    grid-column-start: 2;
-    grid-row: 2/6;
-}
-
-.c-input {
-    width: 100%;
-    border: thin solid #BDBDBD;
-    border-radius: .5rem;
-    margin-bottom: 1rem;
-    padding: .3rem;
+    max-width: 25rem;
+    margin: auto;
     display: flex;
-    align-items: center;
-}
-.c-input .icon {
-    margin-right: .2rem;
-}
-.c-input input {
-    border: none;
-    outline: none;
-    background: transparent;
-}
-
-#social-login {
-    display: flex;
-    flex-direction: row;
     justify-content: center;
-}
-#social-login > div {
-    border-radius: 100%;
-    margin: 0 .5rem;
+    flex-direction: column;
+    padding-top: 2rem;
+    > div {
+        width: 100%;
+    }
+    #card {
+        text-align: left;
+        padding: 2rem;
+        border: thin solid #BDBDBD;
+        border-radius: 2rem;
+        min-height: 5rem;
+        .c-input {
+            width: 100%;
+            border: thin solid #BDBDBD;
+            border-radius: .5rem;
+            margin-bottom: 1rem;
+            padding: .3rem;
+            display: flex;
+            align-items: center;
+            .icon {
+                margin-right: .2rem;
+            }
+            input {
+                border: none;
+                outline: none;
+                background: transparent;
+            }
+        }
+        #social-login {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            > div {
+                border-radius: 100%;
+                margin: 0 .5rem;
+            }
+        }
+    }
 }
 </style>
