@@ -4,6 +4,7 @@ import App from './App.vue'
 // Bootstrap
 // npm install bootstrap@next
 // npm i @types/bootstrap
+import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 // Vue Router

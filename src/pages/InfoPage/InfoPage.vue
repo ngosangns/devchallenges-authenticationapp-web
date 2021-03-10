@@ -80,12 +80,18 @@
 <script lang="ts">
 import HeaderComponent from "../../components/HeaderComponent.vue"
 import FooterComponent from "../../components/FooterComponent.vue"
+import { TokenUtil } from "../../utils/TokenUtil"
 
 export default {
     name: "InfoPage",
     components: {
         HeaderComponent,
         FooterComponent,
+    },
+    beforeCreate: function() {
+        if(TokenUtil.getToken() == "") {
+            this.$router.push("/login")
+        }
     }
 }
 </script>
