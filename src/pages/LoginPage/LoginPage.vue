@@ -10,7 +10,7 @@
                 <input type="text" placeholder="Email"
                     v-model="formValue.email.value">
             </div>
-            <span v-if="formValue.email.message != ''" class="invalid-message">
+            <span class="invalid-message">
                 {{formValue.email.message}}
             </span>
             <div class="c-input">
@@ -18,10 +18,21 @@
                 <input type="text" placeholder="Password"
                     v-model="formValue.password.value">
             </div>
-            <span v-if="formValue.password.message != ''" class="invalid-message">
+            <span class="invalid-message">
                 {{formValue.password.message}}
             </span>
-            <button type="submit" class="btn btn-primary w-100" style="border-radius: .5rem">Login</button>
+            <div v-if="formValue.message != ''"
+                class="alert alert-danger" role="alert">
+                {{formValue.message}}
+            </div>
+            <button type="submit" class="btn btn-primary w-100"
+                style="border-radius: .5rem">
+                <div v-if="formValue.state == 'loading'"
+                    class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <span v-if="formValue.state == 'off'">Login</span>
+            </button>
             <!-- Socials login -->
             <p class="w-100 text-center" style="margin-top: 2rem">or continue with these social profile</p>
             <div id="social-login">
@@ -39,20 +50,21 @@
 <script lang="ts">
 import FooterComponent from "../../components/FooterComponent.vue"
 import {RequestUtil} from "../../utils/RequestUtil"
-import axios from "axios"
 
 export default {
     name: "LoginPage",
     data: function() {
         return {
             formValue: {
+                state: "off",
+                message: "",
                 email: {
                     value: "",
-                    message: "asd",
+                    message: "",
                 },
                 password: {
                     value: "",
-                    message: "asd",
+                    message: "",
                 },
             }
         }
@@ -67,15 +79,27 @@ export default {
                 'location=yes, height=570, width=520, scrollbars=yes, status=yes')
         },
         submitAccount: function() {
+            this.formValue.state = "loading"
             RequestUtil.post(String(import.meta.env.VITE_API_LOGIN), {
                 email: this.formValue.email.value,
                 password: this.formValue.password.value,
             })
-                .then(res => {
-                    console.log(res)
+                .then((res: any) => {
+                    if(res.status == 200) {
+                        if(res.data.status == "true") {
+                            this.formValue.state = "success"
+                        }
+                        else {
+                            this.formValue.message = res.data.message
+                            this.formValue.state = "off"
+                            // Handler code ...
+                        }
+                    }
                 })
                 .catch(err => {
                     console.log(err)
+                    this.formValue.state = "off"
+                    // Handler code ...
                 })
         },
     }
@@ -115,6 +139,7 @@ export default {
                 border: none;
                 outline: none;
                 background: transparent;
+                width: 100%;
             }
         }
         .invalid-message {
@@ -134,5 +159,14 @@ export default {
             }
         }
     }
+}
+
+.spinner-border {
+    width: 1rem!important;
+    height: 1rem!important;
+    border-width: .18rem;
+}
+.alert {
+    font-size: .9rem;
 }
 </style>
