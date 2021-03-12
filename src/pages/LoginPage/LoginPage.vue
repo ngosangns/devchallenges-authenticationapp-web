@@ -32,6 +32,7 @@
                     <span class="sr-only"></span>
                 </div>
                 <span v-if="formValue.state == 'off'">Login</span>
+                <span class="material-icons" v-if="formValue.state == 'success'">done</span>
             </button>
             <!-- Socials login -->
             <p class="w-100 text-center" style="margin-top: 2rem">or continue with these social profile</p>
@@ -50,6 +51,7 @@
 <script lang="ts">
 import FooterComponent from "../../components/FooterComponent.vue"
 import {RequestUtil} from "../../utils/RequestUtil"
+import { TokenUtil } from '../../utils/TokenUtil'
 
 export default {
     name: "LoginPage",
@@ -79,6 +81,7 @@ export default {
                 'location=yes, height=570, width=520, scrollbars=yes, status=yes')
         },
         submitAccount: function() {
+            this.formValue.message = ""
             this.formValue.state = "loading"
             RequestUtil.post(String(import.meta.env.VITE_API_LOGIN), {
                 email: this.formValue.email.value,
@@ -86,8 +89,9 @@ export default {
             })
                 .then((res: any) => {
                     if(res.status == 200) {
-                        if(res.data.status == "true") {
+                        if(res.data.status == true) {
                             this.formValue.state = "success"
+                            TokenUtil.setToken(res.data.message.token)
                         }
                         else {
                             this.formValue.message = res.data.message
@@ -125,30 +129,38 @@ export default {
         border: thin solid #BDBDBD;
         border-radius: 2rem;
         min-height: 5rem;
-        .c-input {
-            width: 100%;
-            border: thin solid #BDBDBD;
-            border-radius: .5rem;
-            padding: .3rem;
-            display: flex;
-            align-items: center;
-            .icon {
-                margin-right: .2rem;
+        form {
+            button {
+                .material-icons {
+                    display: block;
+                }
             }
-            input {
-                border: none;
-                outline: none;
-                background: transparent;
+            .c-input {
                 width: 100%;
+                border: thin solid #BDBDBD;
+                border-radius: .5rem;
+                padding: .3rem;
+                display: flex;
+                align-items: center;
+                .icon {
+                    margin-right: .2rem;
+                }
+                input {
+                    border: none;
+                    outline: none;
+                    background: transparent;
+                    width: 100%;
+                }
+            }
+            .invalid-message {
+                display: block;
+                color: red;
+                font-size: .9rem;
+                margin-top: .1rem;
+                margin-bottom: 1rem;
             }
         }
-        .invalid-message {
-            display: block;
-            color: red;
-            font-size: .9rem;
-            margin-top: .1rem;
-            margin-bottom: 1rem;
-        }
+        
         #social-login {
             display: flex;
             flex-direction: row;
