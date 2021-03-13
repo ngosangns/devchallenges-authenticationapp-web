@@ -7,6 +7,8 @@
             <a class="btn dropdown-toggle"
                 role="button" id="dropMenuLink" href="#"
                 data-bs-toggle="dropdown" aria-expanded="false">
+                <img v-if="rec" :src="'data:image/jpeg;base64,'+rec.photo"
+                    class="avatar">
                 {{rec ? (rec["name"] ? rec["name"] : "User") : "User"}}
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropMenuLink">
@@ -44,6 +46,12 @@ export default {
     flex-direction: row;
     align-items: center;
     padding: 0 2rem;
+    .avatar {
+        width: 2rem;
+        height: 2rem;
+        border-radius: .5rem;
+        margin-right: .5rem;
+    }
     #drop-menu {
         padding: 0;
         margin-left: auto;

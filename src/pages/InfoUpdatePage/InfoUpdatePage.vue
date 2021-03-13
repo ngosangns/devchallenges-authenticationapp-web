@@ -14,6 +14,9 @@
         <div v-if="message.length" class="alert alert-danger" role="alert">
             {{message}}
         </div>
+        <router-link to="/" id="back">
+            <span class="material-icons">keyboard_arrow_left</span>Back
+        </router-link>
         <div v-if="!message.length" id="card">
             <form v-on:submit.prevent="submitAccount">
                 <div class="card-body">
@@ -232,6 +235,14 @@ export default {
     margin: auto;
     #header {
         margin-top: 3rem;
+    }
+    #back {
+        display: flex;
+        align-items: center;
+        position: relative;
+        left: 0;
+        text-decoration: none;
+        margin-bottom: .8rem;
     }
     #card {
         text-align: left;
