@@ -4,16 +4,37 @@
         <img src="/resources/devchallenges.svg" style="margin-bottom: 1rem">
         <p style="font-weight: bold">Join thousands of learners from around the world </p>
         <p>Master web development by making real-life projects. There are multiple paths for you to choose</p>
-        <form>
+        <form v-on:submit.prevent="submitAccount">
+            <!-- Account Signup -->
             <div class="c-input">
                 <span class="material-icons icon">email</span>
-                <input type="text" placeholder="Email">
+                <input type="text" placeholder="Email"
+                    v-model="formValue.email.value">
             </div>
+            <span class="invalid-message">
+                {{formValue.email.message}}
+            </span>
             <div class="c-input">
                 <span class="material-icons icon">lock</span>
-                <input type="text" placeholder="Password">
+                <input type="text" placeholder="Password"
+                    v-model="formValue.password.value">
             </div>
-            <button class="btn btn-primary w-100" style="border-radius: .5rem">Start coding now</button>
+            <span class="invalid-message">
+                {{formValue.password.message}}
+            </span>
+            <div v-if="formValue.message != ''"
+                class="alert alert-danger" role="alert">
+                {{formValue.message}}
+            </div>
+            <button type="submit" class="btn btn-primary w-100"
+                style="border-radius: .5rem">
+                <div v-if="formValue.state == 'loading'"
+                    class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <span v-if="formValue.state == 'off'">Start coding now</span>
+                <span class="material-icons" v-if="formValue.state == 'success'">done</span>
+            </button>
             <p class="w-100 text-center" style="margin-top: 2rem">or continue with these social profile</p>
             <div id="social-login">
                 <div><img src="/resources/Google.svg"></div>
@@ -21,7 +42,7 @@
                 <div><img src="/resources/Twitter.svg"></div>
                 <div><img src="/resources/Gihub.svg"></div>
             </div>
-            <p class="w-100 text-center mb-0" style="margin-top: 2rem">Adready a member? Login</p>
+            <p class="w-100 text-center mb-0" style="margin-top: 2rem">Adready a member? <router-link to="/login">Login</router-link></p>
         </form>
     </div>
     <FooterComponent/>
@@ -30,11 +51,79 @@
 
 <script lang="ts">
 import FooterComponent from "../../components/FooterComponent.vue"
+import {RequestUtil} from "../../utils/RequestUtil"
+import { TokenUtil } from '../../utils/TokenUtil'
+
 export default {
     name: "SignupPage",
+    data: function() {
+        return {
+            formValue: {
+                state: "off",
+                message: "",
+                email: {
+                    value: "",
+                    message: "",
+                },
+                password: {
+                    value: "",
+                    message: "",
+                },
+            }
+        }
+    },
     components: {
         FooterComponent,
     },
+    methods: {
+        submitAccount: function() {
+            if(this.formValue.state == "loading") return
+
+            // Reset message
+            this.formValue.message = ""
+            this.formValue.email.message = ""
+            this.formValue.password.message = ""
+
+            // Validate
+            let emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            if(!this.formValue.email.value.match(emailPattern)) {
+                this.formValue.email.message = "Email doesn't match pattern"
+                return
+            }
+            // Check null
+            if(!this.formValue.email.value.length) {
+                this.formValue.email.message = "This field is required"
+                return
+            }
+            if(!this.formValue.password.value.length) {
+                this.formValue.password.message = "This field is required"
+                return
+            }
+
+            this.formValue.state = "loading"
+            RequestUtil.post(String(import.meta.env.VITE_API_SIGNUP), {
+                email: this.formValue.email.value,
+                password: this.formValue.password.value,
+            })
+                .then((res: any) => {
+                    if(res.status == 200) {
+                        if(res.data.status == true) {
+                            this.formValue.state = "success"
+                            TokenUtil.setToken(res.data.message.token)
+                            window.location.href = "/"
+                        }
+                        else {
+                            this.formValue.message = res.data.message
+                            this.formValue.state = "off"
+                        }
+                    }
+                })
+                .catch(err => {
+                    this.formValue.message = "Error"
+                    this.formValue.state = "off"
+                })
+        },
+    }
 }
 </script>
 
@@ -57,23 +146,38 @@ export default {
         border: thin solid #BDBDBD;
         border-radius: 2rem;
         min-height: 5rem;
-        .c-input {
-            width: 100%;
-            border: thin solid #BDBDBD;
-            border-radius: .5rem;
-            margin-bottom: 1rem;
-            padding: .3rem;
-            display: flex;
-            align-items: center;
-            .icon {
-                margin-right: .2rem;
+        form {
+            button {
+                .material-icons {
+                    display: block;
+                }
             }
-            input {
-                border: none;
-                outline: none;
-                background: transparent;
+            .c-input {
+                width: 100%;
+                border: thin solid #BDBDBD;
+                border-radius: .5rem;
+                padding: .3rem;
+                display: flex;
+                align-items: center;
+                .icon {
+                    margin-right: .2rem;
+                }
+                input {
+                    border: none;
+                    outline: none;
+                    background: transparent;
+                    width: 100%;
+                }
+            }
+            .invalid-message {
+                display: block;
+                color: red;
+                font-size: .9rem;
+                margin-top: .1rem;
+                margin-bottom: 1rem;
             }
         }
+        
         #social-login {
             display: flex;
             flex-direction: row;
@@ -84,5 +188,14 @@ export default {
             }
         }
     }
+}
+
+.spinner-border {
+    width: 1rem!important;
+    height: 1rem!important;
+    border-width: .18rem;
+}
+.alert {
+    font-size: .9rem;
 }
 </style>

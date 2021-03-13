@@ -42,7 +42,7 @@
                 <div><img src="/resources/Twitter.svg"></div>
                 <div><img src="/resources/Gihub.svg"></div>
             </div>
-            <p class="w-100 text-center mb-0" style="margin-top: 2rem">Don’t have an account yet? Register</p>
+            <p class="w-100 text-center mb-0" style="margin-top: 2rem">Don’t have an account yet? <router-link to="/signup">Register</router-link></p>
         </form>
     </div>
     <FooterComponent/>
@@ -76,12 +76,34 @@ export default {
     },
     methods: {
         openLoginGoogle: function() {
-            let link = "https://accounts.google.com/o/oauth2/auth?scope=openid%20profile%20email&redirect_uri=http://localhost:8080/api/login-google&response_type=code&client_id=617831923199-ha6054jhlqqkrioohv5fioo5m5f10iki.apps.googleusercontent.com&approval_prompt=force"
+            let link = "https://accounts.google.com/o/oauth2/auth?scope=openid%20profile%20email&redirect_uri=http://localhost:3000/login-google&response_type=code&client_id=617831923199-ha6054jhlqqkrioohv5fioo5m5f10iki.apps.googleusercontent.com&approval_prompt=force"
             let windowGoogle = window.open(link, '_blank', 
                 'location=yes, height=570, width=520, scrollbars=yes, status=yes')
         },
         submitAccount: function() {
+            if(this.formValue.state == "loading") return
+            
+            // Reset message
             this.formValue.message = ""
+            this.formValue.email.message = ""
+            this.formValue.password.message = ""
+
+            // Validate
+            let emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            if(!this.formValue.email.value.match(emailPattern)) {
+                this.formValue.email.message = "Email doesn't match pattern"
+                return
+            }
+            // Check null
+            if(!this.formValue.email.value.length) {
+                this.formValue.email.message = "This field is required"
+                return
+            }
+            if(!this.formValue.password.value.length) {
+                this.formValue.password.message = "This field is required"
+                return
+            }
+
             this.formValue.state = "loading"
             RequestUtil.post(String(import.meta.env.VITE_API_LOGIN), {
                 email: this.formValue.email.value,
@@ -92,18 +114,17 @@ export default {
                         if(res.data.status == true) {
                             this.formValue.state = "success"
                             TokenUtil.setToken(res.data.message.token)
+                            window.location.href = "/"
                         }
                         else {
                             this.formValue.message = res.data.message
                             this.formValue.state = "off"
-                            // Handler code ...
                         }
                     }
                 })
                 .catch(err => {
-                    console.log(err)
+                    this.formValue.message = "Error"
                     this.formValue.state = "off"
-                    // Handler code ...
                 })
         },
     }

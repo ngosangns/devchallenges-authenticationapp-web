@@ -1,5 +1,10 @@
 <template>
-<div id="container">
+<div id="loading" v-if="state == 'loading'">
+    <div class="spinner-border" role="status">
+        <span class="sr-only"></span>
+    </div>
+</div>
+<div v-if="state == 'off'" id="container">
     <HeaderComponent/>
     <div id="content">
         <div id="header">
@@ -81,22 +86,58 @@
 import HeaderComponent from "../../components/HeaderComponent.vue"
 import FooterComponent from "../../components/FooterComponent.vue"
 import { TokenUtil } from "../../utils/TokenUtil"
+import {RequestUtil} from "../../utils/RequestUtil"
 
 export default {
     name: "InfoPage",
+    data: function() {
+        return ({
+            state: "loading",
+            message: "",
+        })
+    },
     components: {
         HeaderComponent,
         FooterComponent,
     },
-    beforeCreate: function() {
-        if(TokenUtil.getToken() == "") {
+    create: function() {
+        let token = TokenUtil.getToken()
+        // Check login
+        if(token == "") {
             this.$router.push("/login")
+            return
         }
+
+        // Get user info
+        RequestUtil.get(String(import.meta.env.VITE_API_USER)+"/?token="+token)
+            .then((res: any) => {
+                if(res.status == 200) {
+                    if(res.data.status == true) {
+                        // Handler code...
+                    }
+                    else {
+                        this.message = res.data.message
+                        this.state = "off"
+                    }
+                }
+            })
+            .catch(err => {
+                this.message = "Error"
+                this.state = "off"
+            })
     }
 }
 </script>
 
 <style scoped lang="scss">
+#loading {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #content {
     max-width: 50rem;
     margin: auto;
