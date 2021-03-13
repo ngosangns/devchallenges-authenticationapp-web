@@ -76,7 +76,7 @@ export default {
     },
     methods: {
         openLoginGoogle: function() {
-            let link = "https://accounts.google.com/o/oauth2/auth?scope=openid%20profile%20email&redirect_uri=http://localhost:3000/login-google&response_type=code&client_id=617831923199-ha6054jhlqqkrioohv5fioo5m5f10iki.apps.googleusercontent.com&approval_prompt=force"
+            let link = "https://accounts.google.com/o/oauth2/auth?scope=openid%20profile%20email&redirect_uri=https://ngosangns-authapp.web.app/login-google&response_type=code&client_id=617831923199-ha6054jhlqqkrioohv5fioo5m5f10iki.apps.googleusercontent.com&approval_prompt=force"
             let windowGoogle = window.open(link, '_blank', 
                 'location=yes, height=570, width=520, scrollbars=yes, status=yes')
         },
