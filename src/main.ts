@@ -13,6 +13,7 @@ import SignupPage from './pages/SignupPage/SignupPage.vue'
 import LoginPage from './pages/LoginPage/LoginPage.vue'
 import LoginGooglePage from './pages/LoginGooglePage/LoginGooglePage.vue'
 import InfoPage from './pages/InfoPage/InfoPage.vue'
+import InfoUpdatePage from './pages/InfoUpdatePage/InfoUpdatePage.vue'
 
 // Material icons
 import 'material-design-icons/iconfont/material-icons.css'
@@ -24,6 +25,7 @@ const routes = [
     { path: '/signup', component: SignupPage },
     { path: '/login', component: LoginPage },
     { path: '/login-google', component: LoginGooglePage },
+    { path: '/info-update', component: InfoUpdatePage },
     { path: '/', component: InfoPage },
 ]
 const router = VueRouter.createRouter({

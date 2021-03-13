@@ -12,4 +12,8 @@ export class TokenUtil {
             return ""
         }
     }
+
+    static removeToken(): void {
+        localStorage.removeItem("_token")
+    }
 }

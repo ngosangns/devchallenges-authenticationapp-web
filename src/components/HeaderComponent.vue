@@ -7,19 +7,33 @@
             <a class="btn dropdown-toggle"
                 role="button" id="dropMenuLink" href="#"
                 data-bs-toggle="dropdown" aria-expanded="false">
-                Xanthe Neal
+                {{rec ? (rec["name"] ? rec["name"] : "User") : "User"}}
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropMenuLink">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                <li><router-link class="dropdown-item" to="/">
+                    <span class="material-icons">account_circle</span>My profile</router-link></li>
+                <li><a class="dropdown-item" href="#">
+                    <span class="material-icons">supervisor_account</span>Group chat</a></li>
+                <div class="dropdown-divider"></div>
+                <li><a v-on:click="logout"
+                    class="dropdown-item" href="#" style="color: red">
+                    <span class="material-icons">exit_to_app</span>Logout</a></li>
             </ul>
         </div>
     </div>
 </template>
 <script>
+import {TokenUtil} from "../utils/TokenUtil"
+
 export default {
     name: "HeaderComponent",
+    props: ["rec"],
+    methods: {
+        logout: function() {
+            TokenUtil.removeToken()
+            window.location.href = "/login"
+        }
+    }
 }
 </script>
 <style scoped lang="scss">
@@ -31,7 +45,27 @@ export default {
     align-items: center;
     padding: 0 2rem;
     #drop-menu {
+        padding: 0;
         margin-left: auto;
+        .dropdown-menu {
+            padding: .5rem;
+            overflow: hidden;
+            li {
+                padding: 0;
+                a {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    margin: 0;
+                    padding: .5rem;
+                    border-radius: .5rem;
+                    .material-icons {
+                        margin-right: .5rem;
+                    }
+                }
+            }
+        }
+        
     }
 }
 </style>

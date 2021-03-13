@@ -193,13 +193,4 @@ export default {
         }
     }
 }
-
-.spinner-border {
-    width: 1rem!important;
-    height: 1rem!important;
-    border-width: .18rem;
-}
-.alert {
-    font-size: .9rem;
-}
 </style>

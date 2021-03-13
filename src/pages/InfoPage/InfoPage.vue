@@ -5,21 +5,24 @@
     </div>
 </div>
 <div v-if="state == 'off'" id="container">
-    <HeaderComponent/>
+    <HeaderComponent :rec="rec"/>
     <div id="content">
         <div id="header">
             <h2>Personal info</h2>
             <p>Basic info, like your name and photo</p>
         </div>
-        <div id="card">
+        <div v-if="message.length" class="alert alert-danger" role="alert">
+            {{message}}
+        </div>
+        <div v-if="!message.length" id="card">
             <div class="card-body">
                 <div>
                     <h5>Profile</h5>
                     <span>Some info may be visible to other people</span>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-outline-secondary"
-                        style="padding: .3rem 2rem; border-radius: 1rem">Edit</button>
+                    <router-link to="/info-update" class="btn btn-outline-secondary"
+                        style="padding: .3rem 2rem; border-radius: 1rem">Edit</router-link>
                 </div>
             </div>
 
@@ -28,7 +31,7 @@
                     <h5>Photo</h5>
                 </div>
                 <div class="content-section">
-                    <div class="avatar"></div>
+                    <img id="change-avatar-image" :src="'data:image/jpeg;base64,'+rec.photo">
                 </div>
             </div>
 
@@ -37,7 +40,7 @@
                     <h5>Name</h5>
                 </div>
                 <div class="content-section">
-                    <span>Xanthe Neal</span>
+                    <span>{{rec.name}}</span>
                 </div>
             </div>
 
@@ -46,7 +49,7 @@
                     <h5>Bio</h5>
                 </div>
                 <div class="content-section">
-                    <span>I am a software developer and a big fan of devchallenges...</span>
+                    <span>{{rec.bio}}</span>
                 </div>
             </div>
 
@@ -55,7 +58,7 @@
                     <h5>Phone</h5>
                 </div>
                 <div class="content-section">
-                    <span>908249274292</span>
+                    <span>{{rec.phone}}</span>
                 </div>
             </div>
 
@@ -64,7 +67,7 @@
                     <h5>Email</h5>
                 </div>
                 <div class="content-section">
-                    <span>xanthe.neal@gmail.com</span>
+                    <span>{{rec.email}}</span>
                 </div>
             </div>
 
@@ -73,7 +76,7 @@
                     <h5>PASSWORD</h5>
                 </div>
                 <div class="content-section">
-                    <span>************</span>
+                    <span>******</span>
                 </div>
             </div>
         </div>
@@ -87,6 +90,7 @@ import HeaderComponent from "../../components/HeaderComponent.vue"
 import FooterComponent from "../../components/FooterComponent.vue"
 import { TokenUtil } from "../../utils/TokenUtil"
 import {RequestUtil} from "../../utils/RequestUtil"
+import {UserModel} from "../../models/UserModel"
 
 export default {
     name: "InfoPage",
@@ -94,13 +98,14 @@ export default {
         return ({
             state: "loading",
             message: "",
+            rec: new UserModel(),
         })
     },
     components: {
         HeaderComponent,
         FooterComponent,
     },
-    create: function() {
+    created: function() {
         let token = TokenUtil.getToken()
         // Check login
         if(token == "") {
@@ -109,11 +114,17 @@ export default {
         }
 
         // Get user info
-        RequestUtil.get(String(import.meta.env.VITE_API_USER)+"/?token="+token)
+        RequestUtil.get(String(import.meta.env.VITE_API_USER), token)
             .then((res: any) => {
                 if(res.status == 200) {
                     if(res.data.status == true) {
-                        // Handler code...
+                        this.rec.email = res.data.message.email
+                        this.rec.password = res.data.message.password
+                        this.rec.name = res.data.message.name
+                        this.rec.photo = res.data.message.photo
+                        this.rec.bio = res.data.message.bio
+                        this.rec.phone = res.data.message.phone
+                        this.state = "off"
                     }
                     else {
                         this.message = res.data.message
@@ -158,10 +169,9 @@ export default {
         > div {
             align-items: center;
         }
-        .avatar {
+        #change-avatar-image {
             width: 5rem;
-            padding-top: 5rem;
-            background: gray;
+            height: 5rem;
             border-radius: .8rem;
         }
         h5 {

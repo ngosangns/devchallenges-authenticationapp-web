@@ -23,4 +23,13 @@ export default defineComponent({
   color: #2c3e50;
   min-height: 100vh;
 }
+
+.spinner-border {
+    width: 1rem!important;
+    height: 1rem!important;
+    border-width: .18rem!important;
+}
+.alert {
+    font-size: .9rem!important;
+}
 </style>
