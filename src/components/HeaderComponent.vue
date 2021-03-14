@@ -7,7 +7,7 @@
             <a class="btn dropdown-toggle"
                 role="button" id="dropMenuLink" href="#"
                 data-bs-toggle="dropdown" aria-expanded="false">
-                <img v-if="rec" :src="'data:image/jpeg;base64,'+rec.photo"
+                <img v-if="rec && rec['photo']" :src="'data:image/jpeg;base64,'+rec.photo"
                     class="avatar">
                 {{rec ? (rec["name"] ? rec["name"] : "User") : "User"}}
             </a>

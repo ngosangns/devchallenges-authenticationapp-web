@@ -13,6 +13,7 @@
 <script lang="ts">
 import {RequestUtil} from "../../utils/RequestUtil"
 import { TokenUtil } from '../../utils/TokenUtil'
+import {title} from "../../var"
 
 export default {
     name: "LoginGooglePage",
@@ -32,6 +33,9 @@ export default {
         },
     },
     created: function() {
+        // Set title
+        document.title = title + " - Login with Google"
+        
         // Get "code" param
         let code = this.getParameterByName("code")
         if(!code || code == "") {

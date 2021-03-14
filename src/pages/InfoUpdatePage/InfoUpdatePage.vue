@@ -1,23 +1,23 @@
 <template>
-<div id="loading" v-if="state == 'loading'">
-    <div class="spinner-border" role="status">
-        <span class="sr-only"></span>
-    </div>
-</div>
-<div v-if="state == 'off'" id="container">
+<div id="container">
     <HeaderComponent :rec="recConst"/>
     <div id="content">
         <div id="header">
             <h2>Personal info</h2>
             <p>Basic info, like your name and photo</p>
         </div>
-        <div v-if="message.length" class="alert alert-danger" role="alert">
+        <div id="loading" v-if="state == 'loading'">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+        <div v-if="state == 'off' && message.length" class="alert alert-danger" role="alert">
             {{message}}
         </div>
-        <router-link to="/" id="back">
+        <router-link v-if="state == 'off' && !message.length" to="/" id="back">
             <span class="material-icons">keyboard_arrow_left</span>Back
         </router-link>
-        <div v-if="!message.length" id="card">
+        <div v-if="state == 'off' && !message.length" id="card">
             <form v-on:submit.prevent="submitAccount">
                 <div class="card-body">
                     <div>
@@ -106,6 +106,7 @@ import FooterComponent from "../../components/FooterComponent.vue"
 import { TokenUtil } from "../../utils/TokenUtil"
 import {RequestUtil} from "../../utils/RequestUtil"
 import {UserModel} from "../../models/UserModel"
+import {title} from "../../var"
 
 export default {
     name: "InfoUpdatePage",
@@ -184,13 +185,16 @@ export default {
                 })
         },
     },
-    mounted: function() {
+    created: function() {
         let token = TokenUtil.getToken()
         // Check login
         if(token == "") {
             this.$router.push("/login")
             return
         }
+
+        // Set title
+        document.title = title + " - Update info"
 
         // Get user info
         RequestUtil.get(String(import.meta.env.VITE_API_USER), token)
@@ -223,8 +227,8 @@ export default {
 
 <style scoped lang="scss">
 #loading {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    min-height: 50vh;
     display: flex;
     align-items: center;
     justify-content: center;

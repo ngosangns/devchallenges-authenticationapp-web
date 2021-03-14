@@ -16,7 +16,7 @@
             </span>
             <div class="c-input">
                 <span class="material-icons icon">lock</span>
-                <input type="text" placeholder="Password"
+                <input type="password" placeholder="Password"
                     v-model="formValue.password.value">
             </div>
             <span class="invalid-message">
@@ -53,6 +53,7 @@
 import FooterComponent from "../../components/FooterComponent.vue"
 import {RequestUtil} from "../../utils/RequestUtil"
 import { TokenUtil } from '../../utils/TokenUtil'
+import {title} from "../../var"
 
 export default {
     name: "SignupPage",
@@ -128,7 +129,18 @@ export default {
                     this.formValue.state = "off"
                 })
         },
-    }
+    },
+    created: function() {
+        let token = TokenUtil.getToken()
+        // Check login
+        if(token != "") {
+            this.$router.push("/")
+            return
+        }
+
+        // Set title
+        document.title = title + " - Signup"
+    },
 }
 </script>
 

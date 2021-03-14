@@ -1,20 +1,20 @@
 <template>
-<div id="loading" v-if="state == 'loading'">
-    <div class="spinner-border" role="status">
-        <span class="sr-only"></span>
-    </div>
-</div>
-<div v-if="state == 'off'" id="container">
+<div id="container">
     <HeaderComponent :rec="rec"/>
     <div id="content">
         <div id="header">
             <h2>Personal info</h2>
             <p>Basic info, like your name and photo</p>
         </div>
-        <div v-if="message.length" class="alert alert-danger" role="alert">
+        <div id="loading" v-if="state == 'loading'">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+        <div v-if="state == 'off' && message.length" class="alert alert-danger" role="alert">
             {{message}}
         </div>
-        <div v-if="!message.length" id="card">
+        <div v-if="state == 'off' && !message.length" id="card">
             <div class="card-body">
                 <div>
                     <h5>Profile</h5>
@@ -91,6 +91,7 @@ import FooterComponent from "../../components/FooterComponent.vue"
 import { TokenUtil } from "../../utils/TokenUtil"
 import {RequestUtil} from "../../utils/RequestUtil"
 import {UserModel} from "../../models/UserModel"
+import {title} from "../../var"
 
 export default {
     name: "InfoPage",
@@ -112,6 +113,9 @@ export default {
             this.$router.push("/login")
             return
         }
+        
+        // Set title
+        document.title = title + " - Home"
 
         // Get user info
         RequestUtil.get(String(import.meta.env.VITE_API_USER), token)
@@ -142,8 +146,8 @@ export default {
 
 <style scoped lang="scss">
 #loading {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    min-height: 50vh;
     display: flex;
     align-items: center;
     justify-content: center;
