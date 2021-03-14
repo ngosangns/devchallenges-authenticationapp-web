@@ -1,2 +1,2 @@
 // App tilte
-export const title = "Authenication App"
+export const title = "Authentication App"
