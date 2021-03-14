@@ -235,7 +235,8 @@ export default {
 }
 
 #content {
-    max-width: 50rem;
+    max-width: 52rem;
+    padding: 0 1rem;
     margin: auto;
     #header {
         margin-top: 3rem;

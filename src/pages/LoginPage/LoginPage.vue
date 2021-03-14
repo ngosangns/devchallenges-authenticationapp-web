@@ -147,7 +147,8 @@ export default {
 #container {
     display: grid;
     min-height: 100vh;
-    max-width: 25rem;
+    max-width: 27rem;
+    padding: 0 1rem;
     margin: auto;
     display: flex;
     justify-content: center;
